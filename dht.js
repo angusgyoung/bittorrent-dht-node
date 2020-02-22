@@ -26,18 +26,17 @@ api.get('/:key', (req, res, next) => {
         if (error) return next(error);
 
         if (result) {
-            const data = {
+            return res.status(200).json({
                 nodeId: result.id.toString('hex'),
-                value: result.v.toString()
-            };
-            return res.status(200).json({ data });
+                data: result.v.toString()
+            });
         } else res.sendStatus(404);
     });
 });
 
-api.put('', (req, res, next) => {
-    const content = req.body.content;
-    const buff = new Buffer.from(content);
+api.post('', (req, res, next) => {
+    const data = req.body.data;
+    const buff = new Buffer.from(data);
 
     dhtNode.put({ v: buff }, (error, hash, n) => {
         if (error) return next(error);
@@ -65,3 +64,5 @@ dhtNode.on('ready', () => {
         console.log('DHT API listening on port', listener.address().port)
     );
 });
+
+export default api;

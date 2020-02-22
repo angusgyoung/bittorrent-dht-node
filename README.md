@@ -9,30 +9,12 @@ See [webtorrent/bittorrent-dht](https://github.com/webtorrent/bittorrent-dht) fo
 ## Endpoints
 
 ---
-
 ```
-GET /227dd57375fe84dc948bfd5c3aa10d59a6795549 HTTP/1.1
-Accept: application/json
-
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
-{
-    "data": {
-        "nodeId": "6e7d5f8fe42757e06dcabb42eca1eff39d1aad78",
-        "value": "Some Value"
-    }
-}
-```
-
----
-
-```
-PUT / HTTP/1.1
+POST / 
 Content-Type: application/json
 Accept: application/json
 {
-	"content": "Some Value"
+	"data": "Some Value"
 }
 
 HTTP/1.1 202 Accepted
@@ -42,7 +24,19 @@ Content-Type: application/json; charset=utf-8
     "nodes": 1
 }
 ```
+---
+```
+GET /227dd57375fe84dc948bfd5c3aa10d59a6795549 HTTP/1.1
+Accept: application/json
 
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+    "nodeId": "6e7d5f8fe42757e06dcabb42eca1eff39d1aad78",
+    "data": "Some Value"
+}
+```
 ---
 
 ## Deployment
