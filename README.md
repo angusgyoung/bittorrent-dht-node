@@ -2,7 +2,7 @@
 
 ## A bitorrent-dht client with more http
 
-An express server that exposes put/get endpoints for inserting and retrieving values from a bittorrent-dht node.
+A web server that exposes POST/GET endpoints for inserting and retrieving values from a bittorrent-dht node.
 
 See [webtorrent/bittorrent-dht](https://github.com/webtorrent/bittorrent-dht) for more extensive documentation of the DHT implementation.
 
@@ -43,16 +43,17 @@ Content-Type: application/json; charset=utf-8
 
 ### Environment Variables
 
--   IS_BOOTSTRAPPER
-    -   Defaults to false. If set to true, the node will not attempt to bootstrap and will listen for bootstrap requests on UDP port 6881 and http requests on TCP port 3000 (unless overridden).
--   NODE_PORT
-    -   UDP port for the DHT client to communicate over. Defaults to a random port.
--   API_PORT
-    -   TCP port for the HTTP server to receive requests . Defaults to a random port.
--   BOOTSTRAP_NODE_URL
-    -   If `IS_BOOTSTRAPPER == false`, use this address to initialise the routing table of this node. Defaults to `127.0.0.1:6881`.
+-   BOOTSTRAP_NODES
+    - Comma-separated list of nodes to attempt to bootstrap from. If none are provided, the node will not attempt to bootstrap.
+    Example: `BOOTSTRAP_NODES=localhost:6881,router.bittorrent.com:6881`
+-   NODE_LISTEN_PORT
+    -   UDP port for the DHT node to communicate over. Defaults to `6881`.
+-   API_LISTEN_PORT
+    -   TCP port for the HTTP server to receive requests . Defaults to `3000`.
 -   NODE_MAX_AGE
     -   Time in seconds to wait for nodes to announce. Defaults to `Infinity`.
+-   LOOKUP_CACHE
+    -   Should the node return a cached value if one exists instead of performing a lookup. Defaults to true.
 
 ---
 
@@ -69,9 +70,7 @@ Content-Type: application/json; charset=utf-8
 
 `npm start`
 
-This will start a node that listens for bootstrappers and http requests on two random ports. These values can be overridden by setting the corresponding enviroment variables.
-
-Setting `IS_BOOTSTRAPPER` to true will (by default) start a node listening for bootstrap requests on UDP port 6881.
+This will start a bootstrap node on port 6881 (API listening on 3000). These values can be overridden by setting the corresponding enviroment variables.
 
 ---
 
@@ -89,12 +88,12 @@ Tested using `podman` but `docker` should work as well.
 
 ##### For a node that bootstraps from 127.0.0.1:6881
 
-`podman run --network host gus33/bittorrent-dht-node:stable`
+`podman run --network host --env BOOTSTRAP_NODES=127.0.0.1:6881 gus33/bittorrent-dht-node:stable`
 
-##### For a node that bootstraps from somewhere else
+##### For a node that bootstraps from multiple nodes
 
-`podman run --network host --env BOOTSTRAP_NODE_URL=router.bittorrent.com:6881 gus33/bittorrent-dht-node:stable`
+`podman run --network host --env BOOTSTRAP_NODE_URL=router.bittorrent.com:6881,router.utorrent.com:6881 gus33/bittorrent-dht-node:stable`
 
 ##### For a bootstrap node
 
-`podman run --network host --env IS_BOOTSTRAPPER=true gus33/bittorrent-dht-node:stable`
+`podman run --network host gus33/bittorrent-dht-node:stable`

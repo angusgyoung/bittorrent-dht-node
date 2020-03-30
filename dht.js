@@ -1,20 +1,12 @@
 import DHT from 'bittorrent-dht';
 import cors from 'cors';
 import express from 'express';
-
-const isBootstrapper = process.env.IS_BOOTSTRAPPER || false,
-    nodePort = isBootstrapper ? process.env.NODE_PORT || 6881 : 0,
-    serverListenPort = isBootstrapper ? process.env.API_PORT || 3000 : 0,
-    bootstrapNodeUrl = process.env.BOOTSTRAP_NODE_URL || '127.0.0.1:6881',
-    nodeMaxAge = process.env.NODE_MAX_AGE || Infinity,
-    nodeConfig = {
-        // supress bootstrap if we are not provided with a host
-        bootstrap: isBootstrapper ? false : [bootstrapNodeUrl],
-        maxAge: nodeMaxAge
-    };
+import config from './config.js';
 
 const api = express();
-const dhtNode = new DHT(nodeConfig);
+const dhtNode = new DHT(config.nodeOptions);
+
+console.log(config);
 
 api.use(express.json());
 api.use(cors());
@@ -22,7 +14,9 @@ api.use(cors());
 api.get('/:key', (req, res, next) => {
     const key = req.params.key;
 
-    dhtNode.get(key, (error, result) => {
+    dhtNode.get(key, {
+        cache: config.caching
+    }, (error, result) => {
         if (error) return next(error);
 
         if (result) {
@@ -54,15 +48,16 @@ api.use((err, req, res, next) => {
     res.status(500).json({ error: err.message });
 });
 
-dhtNode.listen(nodePort, () =>
+dhtNode.listen(config.dhtListenPort, () =>
     console.log('DHT node is listening on port', dhtNode.address().port)
 );
 
 dhtNode.on('ready', () => {
-    console.log('DHT node is ready');
-    let listener = api.listen(serverListenPort, () =>
-        console.log('DHT API listening on port', listener.address().port)
+    let listener = api.listen(config.apiListenPort, () =>
+        console.log('API listening on port', listener.address().port)
     );
 });
+
+dhtNode.on('error', err => console.error(err));
 
 export default api;
