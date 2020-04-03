@@ -54,6 +54,8 @@ Content-Type: application/json; charset=utf-8
     -   Time in seconds to wait for nodes to announce. Defaults to `Infinity`.
 -   LOOKUP_CACHE
     -   Should the node return a cached value if one exists instead of performing a lookup. Defaults to true.
+-   REINSERT
+    -   Should the node reinsert data after a successful lookup. Use to keep frequently accessed data in the table. Defaults to true.
 
 ---
 
