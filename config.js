@@ -16,6 +16,7 @@ export default {
         maxAge: process.env.NODE_MAX_AGE || Infinity
     },
     caching: process.env.LOOKUP_CACHE || true,
+    reinsert: process.env.REINSERT || true,
     dhtListenPort: process.env.NODE_LISTEN_PORT || 6881,
     apiListenPort: process.env.API_LISTEN_PORT || 3000
 }
