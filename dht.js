@@ -75,7 +75,6 @@ dht.on('ready', () => {
     );
 });
 
-dht.on('error', err => console.error(err));
-dht.on('warning', warning => console.warn(warning))
+dht.on('error', err => console.error(err.stack));
 
 export default api;
