@@ -38,6 +38,19 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 ---
+```
+GET /info HTTP/1.1
+Accept: application/json
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{
+  "nodes": [],
+  "values": {}
+}
+```
+---
 
 ## Deployment
 
