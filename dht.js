@@ -11,6 +11,10 @@ console.log("Initialising with config:", config);
 api.use(express.json());
 api.use(cors());
 
+api.get('/info', (req, res, next) => {
+    res.status(200).json(dht.toJSON());
+});
+
 api.get('/:key', (req, res, next) => {
     const key = req.params.key;
 
@@ -60,6 +64,7 @@ api.post('', (req, res, next) => {
     });
 });
 
+
 api.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: err.message });
@@ -75,7 +80,6 @@ dht.on('ready', () => {
     );
 });
 
-dht.on('error', err => console.error(err));
-dht.on('warning', warning => console.warn(warning))
+dht.on('error', err => console.error(err.stack));
 
 export default api;
